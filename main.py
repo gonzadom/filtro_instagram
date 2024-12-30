@@ -1,33 +1,26 @@
 import json
 
-def obtener_seguidores(archivo: str) -> list:
+def json_a_lista(archivo: str, es_json_seguidos: bool) -> list:
     with open(archivo, 'r') as archivo:
-        seguidores = json.load(archivo)
+        archivo_json = json.load(archivo)
+    
+    lista = []
 
-    lista_seguidores = []
+    if es_json_seguidos:
+        archivo_json = archivo_json['relationships_following']
 
-    for seguidor in seguidores:
-        lista_seguidores.append(seguidor["string_list_data"][0]["value"])
+    for elemento in archivo_json:
+        lista.append(elemento["string_list_data"][0]["value"])
 
-    return lista_seguidores
+    return lista
 
-def obtener_seguidos(archivo: str) -> list:
-    with open(archivo, 'r') as archivo:
-        seguidos = json.load(archivo)
-
-    lista_seguidos = []
-
-    for seguido in seguidos['relationships_following']:
-        lista_seguidos.append(seguido["string_list_data"][0]["value"])
-
-    return lista_seguidos
 
 def main():
 
     print('Listado de gente que seguis pero no te sigue!')
 
-    seguidores = obtener_seguidores(input('Archivo json con la gente que te sigue > '))
-    seguidos = obtener_seguidos(input('Archivo json con la gente que seguis > '))
+    seguidores = json_a_lista(input('Archivo json con la gente que te sigue > '), False)
+    seguidos = json_a_lista(input('Archivo json con la gente que seguis > '), True)
 
     generar_archivo = False
     if input('¿Generar archivo con la salida? [S/n] ').upper() == 'S':
